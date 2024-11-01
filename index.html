@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Tap Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff;
+            overflow: hidden;
+            margin: 0;
+        }
+        .game-container {
+            text-align: center;
+            position: relative;
+        }
+        #tapButton {
+            padding: 15px 30px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            animation: wave 2s infinite;
+            box-shadow: 0px 0px 10px rgba(0, 123, 255, 0.7);
+        }
+        #pointsDisplay {
+            font-size: 18px;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .points-animate {
+            position: absolute;
+            color: #007bff;
+            font-size: 20px;
+            font-weight: bold;
+            animation: moveUp 1s ease-out;
+            opacity: 0;
+        }
+        .congratulations-message {
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 20px;
+            display: none;
+        }
+        @keyframes wave {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes moveUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-80px); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <div id="pointsDisplay">Points: 0</div>
+    <button id="tapButton">Tap!</button>
+    <div id="congratulationsMessage" class="congratulations-message">Congratulations! Now subscribe to continue.</div>
+</div>
+
+<script>
+    let points = 0;
+    const pointsPerTap = 7;
+    const pointsDisplay = document.getElementById("pointsDisplay");
+    const tapButton = document.getElementById("tapButton");
+    const congratulationsMessage = document.getElementById("congratulationsMessage");
+    let subscribed = false;
+
+    // Update points display
+    function updatePoints() {
+        pointsDisplay.textContent = "Points: " + points;
+    }
+
+    // Animate points
+    function animatePoints() {
+        const animationElem = document.createElement("div");
+        animationElem.classList.add("points-animate");
+        animationElem.textContent = "+7";
+        document.body.appendChild(animationElem);
+
+        const rect = tapButton.getBoundingClientRect();
+        animationElem.style.left = `${rect.left + rect.width / 2}px`;
+        animationElem.style.top = `${rect.top}px`;
+
+        animationElem.addEventListener("animationend", () => {
+            animationElem.remove();
+        });
+    }
+
+    // Tap button click event
+    tapButton.addEventListener("click", () => {
+        points += pointsPerTap;
+        updatePoints();
+        animatePoints();
+
+        if (points >= 50 && !subscribed) {
+            // Show the congratulations message and redirect
+            congratulationsMessage.style.display = "block";
+            setTimeout(() => {
+                window.location.href = "https://www.youtube.com/channel/UCLBivSEh30F44ptAAgEVRUA?sub_confirmation=1";
+            }, 1500); // Delayed redirect to show the message
+            subscribed = true; // Ensures this only happens once
+        }
+    });
+</script>
+
+</body>
+</html>
